@@ -359,10 +359,16 @@ class DeepResearchCapability(BaseCapability):
                 },
                 source=self.name,
             )
-            return
+            if request_config.mode == "planning":
+                return
+            confirmed_outline = outline_items
 
         pre_outline = [
-            {"title": item.title, "overview": item.overview} for item in confirmed_outline
+            {
+                "title": item.get("title") if isinstance(item, dict) else item.title,
+                "overview": item.get("overview") if isinstance(item, dict) else item.overview
+            }
+            for item in confirmed_outline
         ]
 
         pipeline = ResearchPipeline(

@@ -8,6 +8,7 @@ This is the single source of truth for agent base functionality across:
 - co_writer module
 - question module (unified in Jan 2026 refactor)
 """
+import sys
 
 from abc import ABC, abstractmethod
 import inspect
@@ -103,6 +104,8 @@ class BaseAgent(ABC):
             self.model = model or env_llm.model
             self.api_version = api_version or getattr(env_llm, "api_version", None)
             self.binding = binding or getattr(env_llm, "binding", "openai")
+            with open("/Users/kawasakimasanori/Desktop/VScode/DeepTutor/debug.log", "a") as f:
+                f.write(f"[BaseAgent] {agent_name} initialized: model={self.model}, binding={self.binding}\n")
         except ValueError:
             # Fallback if env config not available
             self.api_key = api_key or os.getenv("LLM_API_KEY")

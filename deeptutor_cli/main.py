@@ -1,6 +1,11 @@
 """CLI entry point for the standalone ``deeptutor-cli`` package."""
 
 from __future__ import annotations
+import sys
+import os
+# Force local directory to the front of sys.path
+sys.path.insert(0, os.getcwd())
+sys.stderr.write(f"!!! CLI LOADED. PYTHONPATH: {sys.path[:3]} !!!\n")
 
 import typer
 

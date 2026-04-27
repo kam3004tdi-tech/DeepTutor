@@ -75,6 +75,9 @@ PROVIDER_ALIASES = {
     "azureopenai": "azure_openai",
     "google": "gemini",
     "google_genai": "gemini",
+    "vertex": "vertexai",
+    "vertex-ai": "vertexai",
+    "vertexai": "vertexai",
     "claude": "anthropic",
     "openai_compatible": "custom",
     "openai-compatible": "custom",
@@ -404,6 +407,14 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         display_name="Qianfan",
         backend="openai_compat",
         default_api_base="https://qianfan.baidubce.com/v2",
+    ),
+    ProviderSpec(
+        name="vertexai",
+        keywords=("vertexai", "vertex"),
+        env_key="GOOGLE_APPLICATION_CREDENTIALS",
+        display_name="Vertex AI",
+        backend="openai_compat",
+        is_direct=True,
     ),
 )
 

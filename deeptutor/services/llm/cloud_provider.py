@@ -156,8 +156,17 @@ async def complete(
         str: The LLM response
     """
     binding_lower = (binding or "openai").lower()
+    logger.debug(f"Cloud provider complete called with binding: {binding_lower}, model: {model}")
     if model is None or not model.strip():
         raise LLMConfigError("Model is required for cloud LLM provider")
+
+    if binding_lower == "vertexai":
+        return await _vertex_complete(
+            model=model,
+            prompt=prompt,
+            system_prompt=system_prompt,
+            **kwargs,
+        )
 
     if binding_lower in ["anthropic", "claude"]:
         max_tokens_value = _coerce_int(kwargs.get("max_tokens"), None)
@@ -227,8 +236,22 @@ async def stream(
         str: Response chunks
     """
     binding_lower = (binding or "openai").lower()
+    with open("/Users/kawasakimasanori/Desktop/VScode/DeepTutor/debug.log", "a") as f:
+        f.write(f"[CloudProvider] Stream called: binding={binding_lower}, model={model}\n")
+    logger.debug(f"Cloud provider stream called with binding: {binding_lower}, model: {model}")
     if model is None or not model.strip():
         raise LLMConfigError("Model is required for cloud LLM provider")
+
+    if binding_lower == "vertexai":
+        async for chunk in _vertex_stream(
+            model=model,
+            prompt=prompt,
+            system_prompt=system_prompt,
+            messages=messages,
+            **kwargs,
+        ):
+            yield chunk
+        return
 
     if binding_lower in ["anthropic", "claude"]:
         max_tokens_value = _coerce_int(kwargs.get("max_tokens"), None)
@@ -612,6 +635,41 @@ async def _openai_stream(
                     continue
         finally:
             await resp_cm.__aexit__(None, None, None)
+
+
+async def _vertex_complete(
+    model: str,
+    prompt: str,
+    system_prompt: str,
+    **kwargs: object,
+) -> str:
+    """Vertex AI completion using google-genai SDK."""
+    from .vertex_auth import vertex_complete
+    return await vertex_complete(
+        prompt=prompt,
+        system_prompt=system_prompt,
+        model=model,
+        **kwargs,
+    )
+
+
+async def _vertex_stream(
+    model: str,
+    prompt: str,
+    system_prompt: str,
+    messages: list[dict[str, object]] | None = None,
+    **kwargs: object,
+) -> AsyncGenerator[str, None]:
+    """Vertex AI streaming using google-genai SDK."""
+    from .vertex_auth import vertex_stream
+    async for chunk in vertex_stream(
+        prompt=prompt,
+        system_prompt=system_prompt,
+        model=model,
+        messages=messages,
+        **kwargs,
+    ):
+        yield chunk
 
 
 async def _anthropic_complete(

@@ -49,10 +49,25 @@ class EmbeddingClient:
         self.config = config or get_embedding_config()
         self.logger = get_logger("EmbeddingClient")
         adapter_class = _resolve_adapter_class(self.config.binding)
+        
+        effective_key = self.config.api_key
+        effective_url = self.config.effective_url or self.config.base_url
+        
+        # Automatic handling for Vertex AI
+        if self.config.binding == "vertexai":
+            from deeptutor.services.llm.vertex_auth import build_vertex_openai_url, get_vertex_credentials
+            token, project_id, region = get_vertex_credentials()
+            if token and project_id:
+                effective_key = token
+                # For embeddings, we use the same OpenAI-compatible base URL logic
+                effective_url = build_vertex_openai_url(project_id, region, self.config.model)
+            else:
+                self.logger.warning("Vertex AI authentication failed for embedding client.")
+
         self.adapter = adapter_class(
             {
-                "api_key": self.config.api_key,
-                "base_url": self.config.effective_url or self.config.base_url,
+                "api_key": effective_key,
+                "base_url": effective_url,
                 "api_version": self.config.api_version,
                 "model": self.config.model,
                 "dimensions": self.config.dim,

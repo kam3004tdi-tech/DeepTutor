@@ -132,6 +132,17 @@ PROVIDER_TEMPLATES = {
 {% endfor %}
 ---
 *{{ results|length }} academic papers found via Google Scholar*""",
+    # -------------------------------------------------------------------------
+    # DUCKDUCKGO TEMPLATE
+    # -------------------------------------------------------------------------
+    "duckduckgo": """### Search Results for "{{ query }}" (DuckDuckGo)
+
+{% for result in results[:max_results] %}
+**[{{ loop.index }}] {{ result.title }}**
+{{ result.snippet }}
+🔗 {{ result.url }}
+
+{% endfor %}""",
 }
 
 
@@ -147,6 +158,7 @@ class AnswerConsolidator:
         "serper": "serper",
         "jina": "jina",
         "serper_scholar": "serper_scholar",
+        "duckduckgo": "duckduckgo",
     }
 
     def __init__(

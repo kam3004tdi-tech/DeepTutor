@@ -287,6 +287,7 @@ Generate exactly {num_subtopics} subtopics. Please ensure exactly {num_subtopics
         ):
             _chunks.append(_c)
         response = "".join(_chunks)
+        print(f"--- DEBUG: Raw LLM Response ---\n{response}\n-------------------------------")
 
         # Parse JSON output
         from ..utils.json_utils import ensure_json_dict, ensure_keys
