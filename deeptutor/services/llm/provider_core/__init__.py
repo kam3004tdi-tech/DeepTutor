@@ -6,6 +6,7 @@ from .base import GenerationSettings, LLMProvider, LLMResponse, ToolCallRequest
 from .github_copilot_provider import GitHubCopilotProvider
 from .openai_codex_provider import OpenAICodexProvider
 from .openai_compat_provider import OpenAICompatProvider
+from .vertex_provider import VertexAIProvider
 
 __all__ = [
     "AnthropicProvider",
@@ -16,5 +17,6 @@ __all__ = [
     "LLMResponse",
     "OpenAICodexProvider",
     "OpenAICompatProvider",
+    "VertexAIProvider",
     "ToolCallRequest",
 ]

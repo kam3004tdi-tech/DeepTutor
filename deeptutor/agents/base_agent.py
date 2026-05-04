@@ -98,14 +98,18 @@ class BaseAgent(ABC):
 
         # Load LLM configuration
         try:
+            from deeptutor.services.config import PROJECT_ROOT
+
             env_llm = get_llm_config()
             self.api_key = api_key or env_llm.api_key
             self.base_url = base_url or env_llm.base_url
             self.model = model or env_llm.model
             self.api_version = api_version or getattr(env_llm, "api_version", None)
             self.binding = binding or getattr(env_llm, "binding", "openai")
-            with open("/Users/kawasakimasanori/Desktop/VScode/DeepTutor/debug.log", "a") as f:
-                f.write(f"[BaseAgent] {agent_name} initialized: model={self.model}, binding={self.binding}\n")
+            with open(PROJECT_ROOT / "debug.log", "a") as f:
+                f.write(
+                    f"[BaseAgent] {agent_name} initialized: model={self.model}, binding={self.binding}\n"
+                )
         except ValueError:
             # Fallback if env config not available
             self.api_key = api_key or os.getenv("LLM_API_KEY")

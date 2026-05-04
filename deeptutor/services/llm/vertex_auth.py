@@ -4,8 +4,11 @@ from deeptutor.logging import get_logger
 
 logger = get_logger("VertexAuth")
 
+from deeptutor.services.config import PROJECT_ROOT
+
 def log_to_file(msg: str):
-    with open("/Users/kawasakimasanori/Desktop/VScode/DeepTutor/debug.log", "a") as f:
+    log_path = os.path.join(PROJECT_ROOT, "debug.log")
+    with open(log_path, "a") as f:
         f.write(msg + "\n")
 
 def get_vertex_config() -> Tuple[Optional[str], Optional[str], Optional[str]]:

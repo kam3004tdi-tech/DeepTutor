@@ -11,6 +11,7 @@ from deeptutor.services.llm.provider_core import (
     LLMProvider,
     OpenAICodexProvider,
     OpenAICompatProvider,
+    VertexAIProvider,
 )
 from deeptutor.services.provider_registry import find_by_name
 
@@ -40,6 +41,14 @@ def get_runtime_provider(config: LLMConfig | None = None) -> LLMProvider:
             default_model=llm_config.model,
             extra_headers=llm_config.extra_headers or None,
             supports_prompt_caching=bool(spec and spec.supports_prompt_caching),
+        )
+    elif backend == "vertexai":
+        provider = VertexAIProvider(
+            api_key=llm_config.api_key or None,
+            api_base=llm_config.effective_url or llm_config.base_url or None,
+            default_model=llm_config.model,
+            extra_headers=llm_config.extra_headers or None,
+            spec=spec,
         )
     else:
         provider = OpenAICompatProvider(

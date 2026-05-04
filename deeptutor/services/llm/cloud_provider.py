@@ -236,7 +236,9 @@ async def stream(
         str: Response chunks
     """
     binding_lower = (binding or "openai").lower()
-    with open("/Users/kawasakimasanori/Desktop/VScode/DeepTutor/debug.log", "a") as f:
+    from deeptutor.services.config import PROJECT_ROOT
+    log_path = os.path.join(PROJECT_ROOT, "debug.log")
+    with open(log_path, "a") as f:
         f.write(f"[CloudProvider] Stream called: binding={binding_lower}, model={model}\n")
     logger.debug(f"Cloud provider stream called with binding: {binding_lower}, model: {model}")
     if model is None or not model.strip():

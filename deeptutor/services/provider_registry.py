@@ -413,7 +413,7 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         keywords=("vertexai", "vertex"),
         env_key="GOOGLE_APPLICATION_CREDENTIALS",
         display_name="Vertex AI",
-        backend="openai_compat",
+        backend="vertexai",
         is_direct=True,
     ),
 )
